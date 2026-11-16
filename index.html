@@ -284,6 +284,49 @@
       cursor: pointer;
     }
 
+    .pie { display: flex; justify-content: center; gap: 22px; }
+
+    /* ---------- Ventana del QR ---------- */
+    .qr-modal {
+      margin: auto;
+      width: min(340px, calc(100% - 32px));
+      padding: 28px 24px 22px;
+      border: 0;
+      border-radius: 24px;
+      background: var(--crema-claro);
+      color: var(--chocolate);
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(74, 29, 14, 0.35);
+    }
+    .qr-modal::backdrop { background: rgba(74, 29, 14, 0.55); }
+    .qr-modal h2 {
+      font-family: var(--titulos);
+      font-weight: 600;
+      font-size: 28px;
+    }
+    .qr-modal p { margin-top: 6px; font-size: 13px; color: var(--texto-suave); }
+    .qr-modal img {
+      display: block;
+      width: 100%;
+      max-width: 240px;
+      margin: 18px auto;
+      border-radius: 14px;
+      background: #fff;
+    }
+    .qr-botones { display: flex; gap: 10px; }
+    .qr-botones a, .qr-botones button {
+      flex: 1;
+      padding: 13px;
+      border-radius: 14px;
+      font-family: var(--textos);
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .qr-botones a { background: var(--terracota); color: var(--crema); border: 0; }
+    .qr-botones button { background: transparent; color: var(--terracota); border: 1px solid var(--terracota); }
+
     .aviso {
       position: fixed;
       left: 50%;
@@ -370,8 +413,22 @@
       <span class="estado" id="estado">Horario</span>
     </div>
 
-    <button class="compartir" id="compartir" type="button">Compartir esta tarjeta</button>
+    <div class="pie">
+      <button class="compartir" id="verQR" type="button">Ver código QR</button>
+      <button class="compartir" id="compartir" type="button">Compartir tarjeta</button>
+    </div>
   </main>
+
+  <!-- Ventana con el código QR -->
+  <dialog class="qr-modal" id="qrModal" aria-labelledby="qrTitulo">
+    <h2 id="qrTitulo">Escanéame</h2>
+    <p>Apunta con la cámara del móvil para abrir mi tarjeta</p>
+    <img src="qr.svg" alt="Código QR de la tarjeta de Sury Saray" width="240" height="240">
+    <div class="qr-botones">
+      <a href="qr.png" download="QR-Sury-Saray.png">Descargar</a>
+      <button type="button" id="cerrarQR">Cerrar</button>
+    </div>
+  </dialog>
 
   <div class="aviso" id="aviso" role="status" aria-live="polite"></div>
 
@@ -458,6 +515,12 @@
         el.style.display = "none";
       }
     })();
+
+    // ---------- Código QR ----------
+    const qrModal = document.getElementById("qrModal");
+    document.getElementById("verQR").addEventListener("click", () => qrModal.showModal());
+    document.getElementById("cerrarQR").addEventListener("click", () => qrModal.close());
+    qrModal.addEventListener("click", e => { if (e.target === qrModal) qrModal.close(); });
 
     // ---------- Compartir tarjeta ----------
     document.getElementById("compartir").addEventListener("click", async () => {
